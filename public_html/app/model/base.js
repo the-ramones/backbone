@@ -232,40 +232,43 @@ var MovieAppModel = Backbone.Model.extend({
         this.movies.bind('add', this.addMovie);
         this.movies.bind('remove', this.removeMovie);
     },
-            
     events: {
         /* user events that view to respond to */
     },
-    
     render: function() {
         this.el = ich.app(this.model.toJSON());
-        
+
         /* Store a reference to our movie list */
         this.movieLibrary = this.$('#movieLibrary');
 
         return this;
     },
-    
     addMovie: function(movie) {
         var view = new MovieView({model: movie});
         // Append a new movie to the rendered view
         this.movieLibrary.append(view.render().el);
     },
-    
     removeMovie: function(movie) {
         this.$('#' + movie.get('htmlId')).remove();
-    }    
+    }
 });
 
 var MovieAppView = Backbone.Model.extend({
     initialize: function(attrs) {
         Backbone.Model.apply(this, attrs);
         // Binds all nodel events to view functions
-        this.model.mo
+        this.model.movies.bind('add', this.addMovie);
+        this.model.movies.bind('remove', this.removeMovie);
+    },
+    addMovie: function(movie) {
+        this.movieLibrary.append(view.render().el);
+    },
+    removeMovie: function(movie) {
+        this.$('#' + movie.get('htmlId')).remove();
     }
 });
 
-/* Singleton */ 
+/* Singleton */
 var MovieAppController = {
     init: function(spec) {
         this.config = {
@@ -277,20 +280,19 @@ var MovieAppController = {
         /* model is a movie "The Place Beyond the Pines */
         this.model = new MovieAppModel({
             title: "The Palce Beyond the Pines",
-            release: new Date(2013,5,19),
+            release: new Date(2013, 5, 19),
             director: "Derec Ciafrance",
             rating: 7.4,
             starts: [EvaMendez, RyanGosling]
         });
-        
+
         /* view is a out movie view */
         this.view = new MovieView({model: this.model});
-        
+
         this.movieLibrary = new MovieLibrary;
-        
+
         return this;
     },
-            
     handlePubSubUpdate: function() {
         /* TODO: write a handler */
     }
